@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
-#include <version>
+
+// Feature detection for C++23
+#if __has_include(<version>)
+    #include <version>
+#endif
 
 int main(int argc, char* argv[]) {
     std::cout << "Czar Compiler v0.1.0" << std::endl;

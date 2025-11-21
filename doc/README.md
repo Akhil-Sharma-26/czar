@@ -7,7 +7,7 @@ This directory contains documentation and development notes for the Czar compile
 ### Prerequisites
 - CMake 3.20 or higher
 - C++23 compatible compiler:
-  - GCC 11+ (with `-std=c++23` or `-std=c++2b`)
+  - GCC 12+ (recommended for full C++23 support with `-std=c++23` or `-std=c++2b`)
   - Clang 14+
   - MSVC 2022 (Visual Studio 17.0+)
 

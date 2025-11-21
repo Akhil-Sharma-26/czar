@@ -26,6 +26,7 @@ if(MSVC)
         /Zc:__cplusplus     # Enable updated __cplusplus macro
     )
     # Enable C++23 features for MSVC
+    # Note: MSVC uses /std:c++latest for C++23 as /std:c++23 is not yet available
     add_compile_options(/std:c++latest)
 else()
     # GCC/Clang flags
