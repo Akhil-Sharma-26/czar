@@ -7,9 +7,9 @@ This directory contains documentation and development notes for the Czar compile
 ### Prerequisites
 - CMake 3.20 or higher
 - C++23 compatible compiler:
-  - GCC 12+ (recommended for full C++23 support with `-std=c++23` or `-std=c++2b`)
+  - GCC 13+ (recommended for complete C++23 support with `-std=c++23`)
   - Clang 14+
-  - MSVC 2022 (Visual Studio 17.0+)
+  - MSVC 2022 (Visual Studio 17.0+, version 17.9+ recommended)
 
 ### Building on Linux
 
@@ -37,13 +37,19 @@ Or open the generated solution file in Visual Studio.
 
 After building, the executable will be in `build/bin/`:
 
+**Linux/Mac:**
 ```bash
 ./build/bin/czar
 ```
 
-On Windows:
+**Windows (with multi-config generators like Visual Studio):**
 ```powershell
 .\build\bin\Release\czar.exe
+```
+
+**Windows (with single-config generators like Ninja):**
+```powershell
+.\build\bin\czar.exe
 ```
 
 ## Development Notes
