@@ -51,6 +51,7 @@ install_manifest.txt
 CTestTestfile.cmake
 _deps/
 out/
+/build
 
 # IDE files
 .vscode/
