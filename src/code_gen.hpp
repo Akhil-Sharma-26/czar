@@ -13,10 +13,18 @@ public:
 
             void operator()( const NodeExprIntLit& expr_int_lit){
                 gen->m_output << "    mov rax, "<<expr_int_lit.int_lit.value.value() << "\n";
-                gen->m_output << "    push rax\n";
+                gen->push("rax");
             }
             void operator()( const NodeExprIdent& expr_ident){
+                // if we do let x = 0; let y = x or something like that
+                if(gen->m_vars.find(expr_ident.ident.value.value()) == gen->m_vars.end()){
+                    std::cerr<<"undeclared indentifire: "<<expr_ident.ident.value.value()<<std::endl;
+                    exit(EXIT_FAILURE);
+                }
 
+                const auto& var = gen->m_vars.at(expr_ident.ident.value.value());
+                // offset from stack pointer x86
+                gen->push("QWORD [rsp + " + std::to_string((gen->m_stack_size - var.stack_loc) * 8) + "]");
             }
         };
 
@@ -31,11 +39,17 @@ public:
             void operator()(const NodeStatementExit& stmt_exit) const{ //1 
                 gen->gen_expr(stmt_exit.expr);
                 gen->m_output << "    mov rax, 60\n";
-                gen->m_output << "    pop rdi\n";
+                gen->pop("rdi");
                 gen->m_output << "    syscall\n";
             }
             void operator()(const NodeStatementManlo& stmt_manloo){ //2>
-
+                if(gen->m_vars.find(stmt_manloo.ident.value.value()) != gen->m_vars.end()){
+                    std::cerr<<"Variable named already used: "<<stmt_manloo.ident.value.value() <<std::endl;;
+                    exit(EXIT_FAILURE);
+                }
+                
+                gen->m_vars.insert({stmt_manloo.ident.value.value(), Var {.stack_loc = gen->m_stack_size}});
+                gen->gen_expr(stmt_manloo.expr); // now the value of the expr is top of the stck 
             }
         };
 
@@ -46,6 +60,7 @@ public:
     [[nodiscard]] std::string gen_code(){
         m_output << "global _start:\n_start:\n";
         
+        // TODO: only one variable is being initialized. Debug it
         for(const NodeStatements& st: m_prog.stmts){
             gen_stmt(st);
         }   
@@ -57,6 +72,24 @@ public:
     }
 
 private:
+
+    void push(const std::string& reg){
+        m_output << "    push "<< reg<<"\n";
+        m_stack_size++;
+    }
+
+    void pop(const std::string& reg){
+        m_output << "    pop "<<reg<<"\n";
+        m_stack_size--;
+    }
+
+    struct Var{
+        size_t stack_loc;
+        // todo: add type
+    };
+
     const NodeProg m_prog;
     std::stringstream m_output;
+    size_t m_stack_size = 0;
+    std::unordered_map<std::string, Var> m_vars {};
 };

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <optional>
 #include <vector>
+#include <unordered_map>
 
 // Feature detection for C++23
 #if __has_include(<version>)
@@ -49,7 +50,7 @@ public:
                     });
                     buf.clear();
                 } 
-                else if(buf == "let"){
+                else if(buf == "manlo"){
                     tokens.push_back({
                         .type = TokenType::maanlo
                     });
