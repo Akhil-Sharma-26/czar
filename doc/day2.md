@@ -6,3 +6,7 @@
 3. *The explicit keyword in C++ is a specifier used primarily with constructors and conversion operators to prevent implicit type conversions. Its main purpose is to disallow the compiler from automatically converting one type to another using a constructor that takes a single argument, or a user-defined conversion operator.*
 -> `MyClass obj1 = 5; // Implicit conversion from int to MyClass
     func(10);        // Implicit conversion from int to MyClass`
+
+4. Each production will have it's own fundtion, which retyrn an option of the node that is in t he left of the expr.
+
+5. The production rules just directly maps to the nodes of our Abstract Syntax tree

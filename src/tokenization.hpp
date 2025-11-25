@@ -83,7 +83,8 @@ private:
 
     // to see what is next char
     // it can be char or end of string
-    [[nodiscard]] std::optional<char> peek(int ahead = 1) const{ 
+    [[nodiscard]] 
+    inline std::optional<char> peek(int ahead = 1) const{ 
         if(m_indx + ahead > m_src.size()){
             return {};
         } else {
@@ -93,7 +94,7 @@ private:
     }
 
     // consume: handle curr
-    char consume(){
+    inline char consume(){
         return m_src.at(m_indx++);
     }
 };

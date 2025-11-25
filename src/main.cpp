@@ -1,27 +1,4 @@
-#include "./tokenization.hpp"
-
-
-
-// straight going from tokens
-std::string tokens_to_asm(const std::vector<Token>& tokens){
-    std::stringstream output;
-    output << "global _start:\n_start:\n";
-    for(size_t i=0;i<tokens.size();i++){
-        const Token& token = tokens[i];
-        if(token.type == TokenType::_return){
-            if(i+1 < tokens.size() && tokens[i+1].type == TokenType::lit_int){
-                if(i+2 < tokens.size() && tokens[i+2].type == TokenType::semi_col){
-                    output << "    mov rax, 60\n";
-                    output << "    mov rdi, " << tokens[i+1].value.value() << "\n";
-                    output << "    syscall";
-                }
-            }
-        }
-    }
-
-    return output.str();
-}
-
+#include "./code_gen.hpp"
 
 int main(int argc, char* argv[]) {
     std::cout << "Czar Compiler v0.1.0\n\n" << std::endl ;
@@ -43,11 +20,16 @@ int main(int argc, char* argv[]) {
 
     Tokenizer Tokenizer(std::move(content));
     std::vector<Token> tokens = Tokenizer.tokenizer(content);
-    
+
+    Parser parser(tokens);
+    std::optional<nodeExit> node = parser.parse();
+
+    Generator gen(node);
+    std::string code = gen.generate();
 
     {
         std::fstream asm_file(std::filesystem::path("./out.asm").string(), std::ios::out);
-        asm_file << tokens_to_asm(tokens);
+        asm_file << code;
     }
 
     system("nasm -felf64 out.asm");
