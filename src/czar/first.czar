@@ -1,1 +1,3 @@
-return 79;
+manlo x = 7;
+manlo y = 8;
+return(x);

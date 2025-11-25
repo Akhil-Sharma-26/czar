@@ -22,14 +22,17 @@ int main(int argc, char* argv[]) {
     std::vector<Token> tokens = Tokenizer.tokenizer(content);
 
     Parser parser(tokens);
-    std::optional<nodeExit> node = parser.parse();
+    std::optional<NodeProg> node = parser.parse_prog();
 
-    Generator gen(node);
-    std::string code = gen.generate();
+    if(!node){
+        std::cerr<<"INvalid program"<<std::endl;
+        exit(EXIT_FAILURE);
+    }
 
+    Generator gen(node.value());
     {
         std::fstream asm_file(std::filesystem::path("./out.asm").string(), std::ios::out);
-        asm_file << code;
+        asm_file << gen.gen_code();
     }
 
     system("nasm -felf64 out.asm");
