@@ -1,79 +1,6 @@
-#include <iostream>
-#include <string>
-#include <filesystem>
-#include <fstream>
-#include <optional>
-#include <vector>
+#include "./tokenization.hpp"
 
-// Feature detection for C++23
-#if __has_include(<version>)
-    #include <version>
-#endif
 
-// Tokens
-enum class TokenType{
-    _return,
-    lit_int,
-    semi_col
-};
-
-struct Token{
-    TokenType type;
-    std::optional<std::string> value;
-};
-
-std::vector<Token> tokenizer(const std::string& str){
-    std::string buf;
-    std::vector<Token> tokens;
-    for(int i=0;i<str.size();i++){
-        char c = str.at(i);
-        if(isalpha(c)){
-            buf.push_back(c);
-            i++;
-            while(isalnum(str.at(i))){
-                buf.push_back(str.at(i));
-                i++;
-            }
-            i--;
-
-            if(buf == "return"){
-                tokens.push_back({
-                    .type = TokenType::_return
-                });
-                buf.clear();
-            }
-            else{
-                std::cerr<<"messed Up return token"<<std::endl;
-                exit(EXIT_FAILURE);
-            }
-        }
-        else if (isdigit(c)){
-            while(isdigit(str[i])){
-                buf.push_back(str.at(i));
-                std::cout<<buf<<std::endl;
-                i++;
-            } i--;
-            tokens.push_back({
-                .type = TokenType::lit_int,
-                .value = buf
-            });
-            buf.clear();
-        }
-        else if(c == ';'){
-            tokens.push_back({
-                .type = TokenType::semi_col
-            });
-            buf.clear();
-        }
-        else if(isspace(c)) continue;
-        else{
-            std::cerr<<"messed Up somewhere"<<std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-    std::cout<<tokens.size()<<std::endl;
-    return tokens;
-}
 
 // straight going from tokens
 std::string tokens_to_asm(const std::vector<Token>& tokens){
@@ -114,7 +41,8 @@ int main(int argc, char* argv[]) {
         content = file_content.str();
     }
 
-    std::vector<Token> tokens = tokenizer(content);
+    Tokenizer Tokenizer(std::move(content));
+    std::vector<Token> tokens = Tokenizer.tokenizer(content);
     
 
     {
