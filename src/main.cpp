@@ -37,7 +37,9 @@ std::vector<Token> tokenizer(const std::string& str){
             i--;
 
             if(buf == "return"){
-                tokens.push_back({.type = TokenType::_return});
+                tokens.push_back({
+                    .type = TokenType::_return
+                });
                 buf.clear();
             }
             else{
@@ -46,16 +48,21 @@ std::vector<Token> tokenizer(const std::string& str){
             }
         }
         else if (isdigit(c)){
-            buf.push_back(c);
             while(isdigit(str[i])){
                 buf.push_back(str.at(i));
+                std::cout<<buf<<std::endl;
                 i++;
             } i--;
-            tokens.push_back({.type = TokenType::lit_int, .value = buf});
+            tokens.push_back({
+                .type = TokenType::lit_int,
+                .value = buf
+            });
             buf.clear();
         }
         else if(c == ';'){
-            tokens.push_back({.type = TokenType::semi_col});
+            tokens.push_back({
+                .type = TokenType::semi_col
+            });
             buf.clear();
         }
         else if(isspace(c)) continue;
@@ -72,7 +79,7 @@ std::vector<Token> tokenizer(const std::string& str){
 std::string tokens_to_asm(const std::vector<Token>& tokens){
     std::stringstream output;
     output << "global _start:\n_start:\n";
-    for(int i=0;i<tokens.size();i++){
+    for(size_t i=0;i<tokens.size();i++){
         const Token& token = tokens[i];
         if(token.type == TokenType::_return){
             if(i+1 < tokens.size() && tokens[i+1].type == TokenType::lit_int){
@@ -100,12 +107,12 @@ int main(int argc, char* argv[]) {
     std::string content;
     {
         std::stringstream file_content;
-        std::fstream ins(std::filesystem::path(argv[1]).string(), std::ios::in);
+        std::fstream ins(std::filesystem::path(
+            argv[1]).string(), std::ios::in
+        );
         file_content << ins.rdbuf(); // reads who file as once
         content = file_content.str();
     }
-
-    std::cout<<content<<std::endl;
 
     std::vector<Token> tokens = tokenizer(content);
     
